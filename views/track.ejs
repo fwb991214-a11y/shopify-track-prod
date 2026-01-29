@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Tracking</title>
+  <link rel="stylesheet" href="/track.css" />
+</head>
+<body>
+
+<div class="card">
+  <h1>Order Tracking</h1>
+
+  <div class="meta">
+    <p><strong>Tracking Number:</strong> <%= tracking %></p>
+    <p><strong>Status:</strong> <span class="status"><%= status %></span></p>
+    <p><strong>Carrier:</strong> <%= carrier %></p>
+  </div>
+
+  <div class="timeline">
+    <% if (events.length === 0) { %>
+      <p class="empty">No tracking updates yet.</p>
+    <% } %>
+
+    <% events.forEach(event => { %>
+      <div class="event">
+        <div class="dot"></div>
+        <div class="content">
+          <div class="time"><%= event.time %></div>
+          <div class="desc"><%= event.desc %></div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+</body>
+</html>

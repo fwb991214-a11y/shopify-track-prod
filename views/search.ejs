@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Track Your Order</title>
+  <link rel="stylesheet" href="/track.css" />
+</head>
+<body>
+
+<div class="card">
+  <h1>Track Your Order</h1>
+
+  <form method="GET" action="/proxy/track">
+    <label class="label">Tracking Number</label>
+
+    <input
+      type="text"
+      name="tracking"
+      placeholder="Enter your tracking number"
+      required
+      class="input"
+    />
+
+    <button type="submit" class="btn">
+      Track Order
+    </button>
+  </form>
+</div>
+
+</body>
+</html>
