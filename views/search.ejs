@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Track Your Order</title>
   <style>
     body {
@@ -50,6 +51,7 @@
       font-size: 16px;
       transition: border-color 0.2s, box-shadow 0.2s;
       color: #212b36;
+      -webkit-appearance: none;
     }
     input[type="text"]:focus {
       border-color: #008060;
@@ -68,10 +70,36 @@
       width: 100%;
       transition: background-color 0.2s;
       box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 48px; /* Fixed height to prevent jump when content changes */
     }
     button:hover {
       background-color: #006e52;
     }
+    button:disabled {
+      background-color: #008060; /* Keep it green but maybe opacity */
+      opacity: 0.8;
+      cursor: wait;
+    }
+    
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     @media (max-width: 600px) {
       .card {
         padding: 24px;
@@ -87,7 +115,7 @@
 
 <div class="card">
   <h1>Track Your Order</h1>
-  <form method="GET">
+  <form method="GET" id="trackForm">
     
     <label class="label" for="tracking">Tracking Number</label>
 
@@ -95,16 +123,38 @@
       id="tracking"
       type="text"
       name="tracking"
-      placeholder="Tracking Number"
+      placeholder="e.g. 1234567890"
       required
       class="input"
-    />
+    >
 
-    <button type="submit" class="btn">
-      Track Order
+    <button type="submit" id="trackBtn">
+      <span class="spinner"></span>
+      <span class="btn-text">Track</span>
     </button>
   </form>
 </div>
+
+<script>
+  document.getElementById('trackForm').addEventListener('submit', function(e) {
+    const input = document.getElementById('tracking');
+    const btn = document.getElementById('trackBtn');
+    const spinner = btn.querySelector('.spinner');
+    const btnText = btn.querySelector('.btn-text');
+
+    if (!input.value.trim()) {
+      e.preventDefault(); // Don't submit empty
+      return;
+    }
+
+    // Show loading state
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    btnText.textContent = 'Tracking...';
+    
+    // Allow form to continue submitting...
+  });
+</script>
 
 </body>
 </html>
