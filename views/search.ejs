@@ -3,20 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <title>Track Your Order</title>
-  <link rel="stylesheet" href="/track.css" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #212b36;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-top: 0;
+      color: #333;
+      margin-bottom: 24px;
+    }
+    .label {
+      display: block;
+      text-align: left;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #454f5b;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #dfe3e8;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #008060;
+      outline: none;
+      box-shadow: 0 0 0 1px #008060;
+    }
+    button {
+      background-color: #008060;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #006e52;
+    }
+  </style>
 </head>
 <body>
 
 <div class="card">
   <h1>Track Your Order</h1>
-<form method="GET" action="/apps/track">
-  
-    <label class="label">Tracking Number</label>
+  <form method="GET">
+    
+    <label class="label" for="tracking">Tracking Number</label>
 
     <input
+      id="tracking"
       type="text"
       name="tracking"
-      placeholder="Enter your tracking number"
+      placeholder="e.g. 1234567890"
       required
       class="input"
     />
