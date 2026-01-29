@@ -191,7 +191,7 @@
         <% events.forEach((event, index) => { %>
           <div class="event <%= index === 0 ? 'latest' : '' %>">
             <div class="event-time"><%= event.time %></div>
-            <div class="event-desc"><%= event.description %></div>
+            <div class="event-desc"><%= event.desc %></div>
             <% if (event.location) { %>
               <div class="event-location"><%= event.location %></div>
             <% } %>
