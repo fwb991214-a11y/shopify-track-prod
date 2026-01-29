@@ -67,6 +67,28 @@ async function registerTracking(trackingNumber) {
 }
 
 /**
+ * Helper to fetch data once
+ */
+async function fetchFrom17Track(tracking) {
+    const response = await axios.post(
+      `${API_BASE_URL}/gettrackinfo`,
+      [{ number: tracking }],
+      {
+        headers: {
+          "17token": TRACK17_KEY,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+}
+
+/**
+ * Sleep helper
+ */
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
  * Get tracking info from 17TRACK
  */
 async function getTrackingInfo(tracking) {
@@ -91,55 +113,66 @@ async function getTrackingInfo(tracking) {
   }
 
   try {
-    // 1. Try to get tracking info
-    let response = await axios.post(
-      `${API_BASE_URL}/gettrackinfo`,
-      [
-        {
-          number: tracking
-        }
-      ],
-      {
-        headers: {
-          "17token": TRACK17_KEY,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
+    // 1. First attempt to get tracking info
+    let data = await fetchFrom17Track(tracking);
     let trackData = null;
 
-    // Check if we got data
-    if (response.data.code === 0 && response.data.data.accepted.length > 0) {
-      // 17TRACK V2.4 structure: accepted[0].track_info or accepted[0].track
-      const item = response.data.data.accepted[0];
+    // Check if we got data immediately
+    if (data.code === 0 && data.data.accepted.length > 0) {
+      const item = data.data.accepted[0];
       trackData = item.track_info || item.track;
-    } else {
+    } 
+    else {
       // 2. If not found, try to register
       console.log(`Tracking ${tracking} not found, attempting registration...`);
       const regResult = await registerTracking(tracking);
       
       if (regResult.ok) {
-        // If registered successfully, return a "pending" state or try to fetch again
-        // Usually fetching immediately might still yield empty results, so we return a "Just Registered" state
-        return {
-          ok: true,
-          tracking,
-          status: "Registered",
-          carrier: "Detecting...",
-          events: [
-            {
-              time: new Date().toLocaleString(),
-              desc: "Tracking number registered. Please check back later for updates."
+        // Registration successful. Now we poll for a few seconds.
+        console.log("Registration success. Polling for data update...");
+        
+        // Try up to 3 times, waiting 1s, 2s, 2s
+        const waitTimes = [1000, 2000, 2000]; 
+        
+        for (const wait of waitTimes) {
+            await delay(wait);
+            console.log(`Polling 17TRACK after ${wait}ms...`);
+            
+            data = await fetchFrom17Track(tracking);
+            if (data.code === 0 && data.data.accepted.length > 0) {
+                 const item = data.data.accepted[0];
+                 // Ensure we actually have meaningful events
+                 const info = item.track_info || item.track;
+                 if (info && info.tracking && info.tracking.providers && info.tracking.providers[0].events.length > 0) {
+                     trackData = info;
+                     console.log("Got data after polling!");
+                     break;
+                 }
             }
-          ]
-        };
+        }
+        
+        // If still no data after polling, return the "Registered" state
+        if (!trackData) {
+             return {
+              ok: true,
+              tracking,
+              status: "Registered",
+              carrier: "Detecting...",
+              events: [
+                {
+                  time: new Date().toLocaleString(),
+                  desc: "Tracking number registered. System is retrieving details from carrier..."
+                }
+              ]
+            };
+        }
+
       } else {
          return { ok: false, error: "Tracking number not found and could not be registered." };
       }
     }
 
-    // 3. Process the track data
+    // 3. Process the track data (if we have it)
     if (trackData) {
       // Parse V2.4 Structure
       let events = [];
@@ -153,7 +186,8 @@ async function getTrackingInfo(tracking) {
           if (providerData && providerData.events) {
               events = providerData.events.map(e => ({
                   time: e.time_iso || e.time_utc || "",
-                  desc: e.description || ""
+                  desc: e.description || "",
+                  location: e.location || ""
               }));
           }
           
