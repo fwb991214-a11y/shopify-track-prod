@@ -23,6 +23,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/proxy", express.static(path.join(__dirname, "public"))); // 兼容 Shopify Proxy 路径
+app.use("/apps/track", express.static(path.join(__dirname, "public"))); // 本地开发兼容：/apps/track/* 静态资源
 
 // --- Local Dev Alias ---
 // Redirect /apps/track to /proxy/track so "Back" buttons work locally
