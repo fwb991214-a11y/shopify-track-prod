@@ -47,80 +47,114 @@ app.get("/", (req, res) => {
  * =========================
  */
 const { getTrackingInfo } = require("./services/trackingService");
+const { getOrderByNameAndEmail } = require("./services/shopifyService");
 const { verifyShopifySignature } = require("./utils/shopifyAuth");
-const { getTrackingFromOrder } = require("./services/shopifyService");
 const logDebug = require('./logger');
 
 const SHOPIFY_APP_SECRET = process.env.SHOPIFY_APP_SECRET;
-const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN; // Needed for Admin API
-const SHOPIFY_SHOP_DOMAIN = process.env.SHOPIFY_SHOP_DOMAIN;   // Needed for Admin API
 
 app.use((req, res, next) => {
   res.setHeader("ngrok-skip-browser-warning", "true");
   next();
 });
+
 app.get("/proxy/track", async (req, res) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
 
-   res.setHeader("Content-Type", "text/html; charset=utf-8");
-  const tracking = req.query.tracking;
-  const orderName = req.query.order;
-  const email = req.query.email;
-
-  logDebug(`Incoming request. Tracking: ${tracking}, Order: ${orderName}, Email: ${email}`);
-
-  // 1. Security Check: Verify request is from Shopify
-  // Note: Localhost testing won't have a valid Shopify signature usually.
-  const isShopifyRequest = verifyShopifySignature(req.query, SHOPIFY_APP_SECRET);
+  const { tracking, order, email } = req.query;
   
+  // 1. Security Check
+  const isShopifyRequest = verifyShopifySignature(req.query, SHOPIFY_APP_SECRET);
   if (!isShopifyRequest) {
-      logDebug("⚠️ Request signature verification failed (not from Shopify Proxy?)");
+      logDebug("⚠️ Signature verification failed");
   } else {
-      logDebug("✅ Request signature verified as authentic Shopify Proxy");
+      logDebug("✅ Signature verified");
   }
 
-  // Case A: Initial Load (No inputs)
-  if (!tracking && (!orderName || !email)) {
-    return res.render("search");
+  // 2. Determine Mode
+  const isOrderSearch = order && email;
+  const isTrackingSearch = !!tracking;
+
+  // If no search params, show Unified Page (initially just search form)
+  if (!isOrderSearch && !isTrackingSearch) {
+    return res.render("track", { 
+        order: null, 
+        packages: [], 
+        isSearch: false,
+        query: req.query 
+    });
   }
 
   try {
-    let finalTrackingNumber = tracking;
+    let viewData = {
+        order: null,
+        packages: [],
+        isSearch: true,
+        query: req.query
+    };
 
-    // Case B: Order + Email Verification
-    if (orderName && email) {
-        logDebug(`Verifying Order: ${orderName} for Email: ${email}`);
-        const verifyResult = await getTrackingFromOrder(orderName, email);
+    if (isOrderSearch) {
+        // --- Order Mode ---
+        console.log(`Searching for Order: ${order}, Email: ${email}`);
+        const orderResult = await getOrderByNameAndEmail(order, email);
         
-        if (!verifyResult.ok) {
-            return res.render("error", {
-                message: verifyResult.error
-            });
+        if (!orderResult.ok) {
+            return res.render("error", { message: orderResult.error || "Order not found" });
         }
-        finalTrackingNumber = verifyResult.trackingNumber;
-        logDebug(`Order Verified. Found Tracking Number: ${finalTrackingNumber}`);
+
+        viewData.order = orderResult.order;
+        
+        // Fetch tracking for all packages in parallel
+        // Note: viewData.order.packages already has basic info, we need to enrich it with 17TRACK data
+        const enrichedPackages = await Promise.all(viewData.order.packages.map(async (pkg) => {
+            if (pkg.tracking_number) {
+                const trackInfo = await getTrackingInfo(pkg.tracking_number);
+                if (trackInfo.ok) {
+                    return {
+                        ...pkg,
+                        status: trackInfo.status,
+                        carrier: trackInfo.carrier,
+                        events: trackInfo.events || []
+                    };
+                }
+            }
+            return { ...pkg, events: [] };
+        }));
+
+        viewData.packages = enrichedPackages;
+
+    } else {
+        // --- Tracking Number Mode ---
+        console.log(`Searching for Tracking: ${tracking}`);
+        const trackInfo = await getTrackingInfo(tracking);
+        
+        if (!trackInfo || !trackInfo.ok) {
+             return res.render("error", { message: trackInfo.error || "Tracking not found" });
+        }
+
+        // Construct a "Virtual" package
+        viewData.packages = [{
+            name: "Package #1",
+            tracking_number: tracking,
+            carrier: trackInfo.carrier,
+            status: trackInfo.status,
+            events: trackInfo.events || []
+        }];
+        
+        // We don't have order info, so viewData.order remains null
     }
 
-    // 2. Proceed to fetch tracking info
-    const data = await getTrackingInfo(finalTrackingNumber);
-    console.log(`[DEBUG] Service returned:`, JSON.stringify(data, null, 2));
-    logDebug(`Service returned: ${JSON.stringify(data)}`);
-
-    if (!data || !data.ok) {
-      return res.render("error", {
-        message: data.error || "Tracking number not found or not yet available."
-      });
+    // Check if we have any data to show
+    if (viewData.packages.length === 0 && !viewData.order) {
+        return res.render("error", { message: "No tracking information found." });
     }
 
-    res.render("track", {
-      tracking: finalTrackingNumber, // Use the resolved tracking number
-      status: data.status,
-      carrier: data.carrier,
-      events: data.events || []
-    });
+    res.render("track", viewData);
+
   } catch (err) {
-    console.error(err);
+    console.error("Server Error:", err);
     res.render("error", {
-      message: "Service temporarily unavailable. Please try again later."
+      message: "System Error. Please try again later."
     });
   }
 });

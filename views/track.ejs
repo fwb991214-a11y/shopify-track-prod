@@ -3,102 +3,217 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tracking Results</title>
+  <title>Track Your Order</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f4f6f8;
-      color: #212b36;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    .container {
-      width: 100%;
-      max-width: 600px;
-      margin-top: 20px;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(63, 63, 68, 0.15);
-      margin-bottom: 20px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .tracking-number {
-      font-size: 20px;
-      font-weight: 600;
+      background-color: #ffffff;
       color: #212b36;
       margin: 0;
+      padding: 0;
     }
-    .carrier {
-      font-size: 14px;
-      color: #637381;
-      margin-top: 4px;
-    }
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 13px;
-      text-transform: uppercase;
-      background-color: #e3f2fd; /* Default blue */
-      color: #1565c0;
-    }
-    .status-badge.delivered {
-      background-color: #e4f8f0;
-      color: #008060;
-    }
-    .status-badge.transit {
-      background-color: #fff4e5;
-      color: #b98900;
-    }
-    .status-badge.exception {
-      background-color: #fbeae5;
-      color: #d82c0d;
+    
+    .page-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
     }
 
-    .timeline {
+    /* --- Search Section Styles --- */
+    .search-card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      width: 100%;
+      max-width: 550px; /* Slightly wider */
+      margin: 0 auto 60px auto; /* Center horizontally and add bottom margin */
+      box-sizing: border-box;
+      border: 1px solid #dfe3e8;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #212b36;
+      font-size: 24px;
+      margin-bottom: 32px;
+      font-weight: 700;
+    }
+    
+    /* Search Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #f1f2f3;
+    }
+    .tab-item {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #637381;
       position: relative;
-      padding-left: 22.5px;
-      border-left: 2px solid #dfe3e8;
+      transition: color 0.3s;
+      font-size: 14px;
+    }
+    .tab-item.active {
+      color: #212b36;
+    }
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #454f5b;
+    }
+    
+    /* Form Elements */
+    .input-wrapper {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #dfe3e8;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #637381;
+    }
+
+    .search-btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #637381;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background-color 0.2s;
       margin-top: 10px;
     }
+    .search-btn:hover {
+      background-color: #454f5b;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* --- Results Section Styles --- */
+    /* Package Tabs */
+    .package-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .package-tab {
+      padding: 12px 30px;
+      border-radius: 50px; /* Pill shape */
+      background: #ffffff;
+      color: #637381;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #dfe3e8;
+      transition: all 0.2s;
+    }
+    .package-tab.active {
+      background: #ffffff;
+      border-color: #212b36; /* Dark border for active */
+      color: #212b36;
+      border-width: 1px;
+    }
+
+    /* Main Grid Layout */
+    .main-grid {
+      display: flex;
+      gap: 0; /* Remove gap, use border */
+      align-items: stretch; /* Stretch to fill height for border */
+      margin-top: 40px;
+    }
+    
+    .left-panel {
+      flex: 1;
+      padding-right: 40px;
+      text-align: center; /* Default center for empty states */
+    }
+    
+    .right-panel {
+      flex: 0 0 350px; /* Fixed width for right panel */
+      padding-left: 40px;
+      border-left: 1px solid #dfe3e8; /* Vertical Divider */
+      text-align: left;
+    }
+
+    /* Status Header (Full Width above grid) */
+    .status-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid #dfe3e8; /* Horizontal Divider */
+    }
+    .status-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #212b36;
+    }
+    .status-desc {
+      color: #637381;
+      font-size: 16px;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      border-left: 2px solid #dfe3e8;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      max-width: 500px; /* Limit width of timeline */
+    }
+    /* Only center the empty state, not the timeline events */
+    .left-panel.has-events .timeline {
+        display: block;
+    }
+    
     .event {
       position: relative;
-      margin-bottom: 30px;
-      padding-left: 24px;
-    }
-    .event:last-child {
-      margin-bottom: 0;
+      margin-bottom: 35px;
+      padding-left: 30px;
     }
     .event::before {
       content: '';
       position: absolute;
-      left: -31px; /* Adjust to center on the line */
-      top: 2px;
+      left: -31px;
+      top: 4px;
       width: 12px;
       height: 12px;
       background: #dfe3e8;
       border-radius: 50%;
-      border: 2px solid #fff;
+      border: 4px solid #fff;
     }
     .event.latest::before {
-      background: #008060;
-      box-shadow: 0 0 0 4px rgba(0, 128, 96, 0.2);
+      background: #212b36;
+      border-color: #fff;
+      box-shadow: 0 0 0 2px #212b36;
     }
     .event-time {
       font-size: 13px;
@@ -106,101 +221,392 @@
       margin-bottom: 4px;
     }
     .event-desc {
-      font-size: 15px;
+      font-size: 16px;
       color: #212b36;
       line-height: 1.5;
     }
     .event-location {
       font-size: 13px;
       color: #637381;
-      margin-top: 2px;
+      margin-top: 4px;
     }
     
-    .back-btn {
-      display: inline-block;
-      text-decoration: none;
-      color: #637381;
-      font-size: 14px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      transition: color 0.2s;
-    }
-    .back-btn:hover {
-      color: #212b36;
-    }
-    .back-btn svg {
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
+    /* Empty State in Left Panel */
+    .no-update {
+        color: #637381;
+        font-size: 18px;
+        font-weight: 500;
+        margin-top: 20px;
     }
 
-    /* Mobile adjustments */
-    @media (max-width: 600px) {
-      .card {
-        padding: 20px;
-      }
-      .header {
+    /* Order Info Card */
+    .info-group {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      align-items: center;
+    }
+    .info-label {
+      color: #637381;
+    }
+    .info-value {
+      color: #212b36;
+      font-weight: 500;
+      text-align: right;
+    }
+    .info-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 24px;
+      color: #212b36;
+    }
+
+    /* Product List */
+    .product-item {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      align-items: flex-start;
+    }
+    .product-img-container {
+      width: 60px;
+      height: 60px;
+      background: #f4f6f8;
+      border: 1px solid #dfe3e8;
+      border-radius: 4px;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .product-details {
+      flex: 1;
+    }
+    .product-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #212b36;
+      margin-bottom: 4px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .product-meta {
+      font-size: 13px;
+      color: #637381;
+      line-height: 1.4;
+    }
+    .product-price {
+        font-weight: 700;
+        color: #212b36;
+        float: right;
+    }
+    
+    @media (max-width: 768px) {
+      .main-grid {
         flex-direction: column;
-        align-items: flex-start;
+        border-top: 1px solid #dfe3e8;
+        margin-top: 0;
       }
-      .status-badge {
-        margin-top: 8px;
+      .right-panel {
+        width: 100%;
+        border-left: none;
+        padding-left: 0;
+        padding-top: 40px;
+        border-top: 1px solid #dfe3e8;
+      }
+      .left-panel {
+          padding-right: 0;
+          padding-bottom: 40px;
+      }
+      .status-header {
+          border-bottom: none; /* Hide border on mobile to avoid double lines */
+          padding-bottom: 20px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="page-container">
+    
+    <!-- SEARCH SECTION -->
+    <div class="search-card">
+      <h1>Track Your Order</h1>
 
-<div class="container">
-  <a href="/apps/track" class="back-btn">
-    <svg viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-    </svg>
-    Back to Search
-  </a>
-
-  <div class="card">
-    <div class="header">
-      <div>
-        <h1 class="tracking-number"><%= tracking %></h1>
-        <div class="carrier"><%= carrier || 'Unknown Carrier' %></div>
+      <div class="tabs">
+        <div class="tab-item active" data-tab="order">Order Number</div>
+        <div class="tab-item" data-tab="tracking">Tracking Number</div>
       </div>
-      
-      <% 
-        let badgeClass = '';
-        let statusLower = (status || '').toLowerCase();
-        if (statusLower === 'delivered') {
-          badgeClass = 'delivered';
-        } else if (statusLower === 'transit' || statusLower === 'in transit') {
-          badgeClass = 'transit';
-        } else if (statusLower === 'exception' || statusLower === 'expired') {
-          badgeClass = 'exception';
-        }
-      %>
-      <div class="status-badge <%= badgeClass %>">
-        <%= status %>
-      </div>
-    </div>
 
-    <div class="timeline">
-      <% if (!events || events.length === 0) { %>
-        <p style="color: #637381; font-style: italic;">No tracking updates available yet.</p>
-      <% } else { %>
-        <% events.forEach((event, index) => { %>
-          <div class="event <%= index === 0 ? 'latest' : '' %>">
-            <div class="event-time"><%= event.time %></div>
-            <div class="event-desc"><%= event.desc %></div>
-            <% if (event.location) { %>
-              <div class="event-location"><%= event.location %></div>
-            <% } %>
+      <form method="GET" id="trackForm" action="/proxy/track">
+        <!-- Order Mode Inputs -->
+        <div id="order-inputs">
+          <div class="input-wrapper">
+            <input
+              id="order"
+              type="text"
+              name="order"
+              placeholder="#155420"
+              required
+              value="<%= (locals.query && locals.query.order) ? locals.query.order : '' %>"
+            >
           </div>
-        <% }); %>
-      <% } %>
-    </div>
-  </div>
-</div>
+          <div class="input-wrapper">
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="schulerts@pm.me"
+              required
+              value="<%= (locals.query && locals.query.email) ? locals.query.email : '' %>"
+            >
+          </div>
+        </div>
 
+        <!-- Tracking Mode Inputs -->
+        <div id="tracking-inputs" class="hidden">
+          <div class="input-wrapper">
+            <input
+              id="tracking"
+              type="text"
+              name="tracking"
+              placeholder="Enter your tracking number"
+              value="<%= (locals.query && locals.query.tracking) ? locals.query.tracking : '' %>"
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="search-btn">Track</button>
+      </form>
+    </div>
+
+    <!-- RESULTS SECTION -->
+    <% if (locals.isSearch) { %>
+      <% if (locals.packages && locals.packages.length > 0) { %>
+        
+        <!-- Package Tabs -->
+        <div class="package-tabs">
+          <% packages.forEach((pkg, index) => { %>
+            <div class="package-tab <%= index === 0 ? 'active' : '' %>" onclick="switchPackageTab(<%= index %>)">
+              <%= pkg.name || 'Package #' + (index + 1) %>
+            </div>
+          <% }); %>
+        </div>
+
+        <div id="packages-container">
+          <% packages.forEach((pkg, index) => { %>
+            <div id="pkg-content-<%= index %>" class="pkg-content" style="display: <%= index === 0 ? 'block' : 'none' %>;">
+              
+              <!-- Status Header -->
+              <div class="status-header">
+                <div class="status-title">
+                  <% 
+                    const hasEvents = pkg && pkg.events && pkg.events.length > 0;
+                    const st = (pkg && pkg.status ? String(pkg.status) : '').toLowerCase();
+                    let title = 'We are preparing your order for dispatch.';
+                    if (!hasEvents) {
+                      title = 'No shipping info for your order yet.';
+                    } else if (st.includes('deliver')) {
+                      title = 'Your order has been delivered.';
+                    } else if (
+                      st.includes('in transit') || 
+                      st.includes('in_transit') || 
+                      st.includes('transit') || 
+                      st.includes('shipped') || 
+                      st.includes('out for delivery') || 
+                      st.includes('picked up')
+                    ) {
+                      title = 'Your order is on the way.';
+                    } else if (st.includes('ready for pickup')) {
+                      title = 'Ready for pickup.';
+                    } else if (st.includes('undelivered') || st.includes('attempt')) {
+                      title = 'Delivery attempted.';
+                    } else if (st.includes('expired')) {
+                      title = 'Tracking expired.';
+                    } else if (st.includes('alert')) {
+                      title = 'Shipment alert.';
+                    }
+                  %>
+                  <%= title %>
+                </div>
+                <div class="status-desc">
+                  <% if (!pkg.events || pkg.events.length === 0) { %>
+                    Your shipment is on the way. Please wait for the carrier to update an event.
+                  <% } else { %>
+                    Carrier: <%= pkg.carrier || pkg.tracking_company || 'Unknown' %> | Tracking: <%= pkg.tracking_number %>
+                  <% } %>
+                </div>
+              </div>
+
+              <div class="main-grid">
+                <!-- Left Panel: Tracking Info -->
+                <div class="left-panel <%= (pkg.events && pkg.events.length > 0) ? 'has-events' : '' %>">
+                  <% if (pkg.events && pkg.events.length > 0) { %>
+                    <div class="timeline">
+                      <% pkg.events.forEach((event, i) => { %>
+                        <div class="event <%= i === 0 ? 'latest' : '' %>">
+                          <div class="event-time">
+                            <% 
+                              let timeDisplay = event.time;
+                              try {
+                                const date = new Date(event.time);
+                                if (!isNaN(date.getTime())) {
+                                  timeDisplay = date.toLocaleString();
+                                }
+                              } catch (e) {}
+                            %>
+                            <%= timeDisplay %>
+                          </div>
+                          <div class="event-desc"><%= event.desc || event.description %></div>
+                          <div class="event-location"><%= event.location || '' %></div>
+                        </div>
+                      <% }); %>
+                    </div>
+                  <% } else { %>
+                    <div class="no-update">No update yet</div>
+                  <% } %>
+                </div>
+
+                <!-- Right Panel: Order Info -->
+                <div class="right-panel">
+                  <div class="info-title">Order Information</div>
+                  
+                  <% if (locals.order) { %>
+                    <div class="info-group">
+                      <span class="info-label">Destination</span>
+                      <span class="info-value"><%= order.destination || '- -' %></span>
+                    </div>
+                    
+                    <div class="info-group">
+                      <span class="info-label">Transport Time</span>
+                      <span class="info-value">- -</span>
+                    </div>
+
+                    <div class="info-group">
+                      <span class="info-label">Order Number</span>
+                      <span class="info-value"><%= order.name %></span>
+                    </div>
+
+                    <div class="info-group">
+                      <span class="info-label">Tracking Number</span>
+                      <span class="info-value"><%= pkg.tracking_number %></span>
+                    </div>
+                  <% } %>
+                  
+                  <!-- Product List -->
+                  <% if (pkg.items && pkg.items.length > 0) { %>
+                      <% pkg.items.forEach(item => { %>
+                          <div class="product-item">
+                          <div class="product-img-container">
+                              <% if (item.image) { %>
+                                  <img src="<%= item.image %>" alt="<%= item.name %>" class="product-img">
+                              <% } else { %>
+                                  <span>📦</span>
+                              <% } %>
+                          </div>
+                          <div class="product-details">
+                              <div class="product-name" title="<%= item.name %>"><%= item.name %></div>
+                              <div class="product-meta">
+                                <%= item.variant_title ? item.variant_title + ' / ' : '' %>
+                                <%= item.sku ? item.sku : '' %>
+                                <br>
+                                <span style="float: right; font-weight: 700; color: #212b36;">
+                                  <%= item.price %> <%= item.currency %> 
+                                  <span style="font-weight: 400; color: #637381;">x <%= item.quantity %></span>
+                                </span>
+                              </div>
+                          </div>
+                          </div>
+                      <% }); %>
+                  <% } else { %>
+                      <div style="color: #637381; font-size: 13px; text-align: center; margin-top: 20px;">No items details.</div>
+                  <% } %>
+                </div>
+              </div>
+
+            </div>
+          <% }); %>
+        </div>
+
+      <% } else { %>
+        <div style="text-align: center; padding: 40px;">
+          <% if (locals.error) { %>
+             <h2 style="color: #d72c0d;">Error</h2>
+             <p><%= error %></p>
+          <% } else { %>
+             <h2>Order Not Found</h2>
+             <p>We couldn't find the order details. Please check your information and try again.</p>
+          <% } %>
+        </div>
+      <% } %>
+    <% } %>
+
+  </div>
+
+  <script>
+    // --- Search Form Logic ---
+    const searchTabs = document.querySelectorAll('.tab-item');
+    const orderInputs = document.getElementById('order-inputs');
+    const trackingInputs = document.getElementById('tracking-inputs');
+    const orderInput = document.getElementById('order');
+    const emailInput = document.getElementById('email');
+    const trackingInput = document.getElementById('tracking');
+
+    searchTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // 1. Toggle Active Tab Class
+        searchTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // 2. Toggle Input Visibility
+        const mode = tab.getAttribute('data-tab');
+        if (mode === 'order') {
+          orderInputs.classList.remove('hidden');
+          trackingInputs.classList.add('hidden');
+          
+          orderInput.setAttribute('required', '');
+          emailInput.setAttribute('required', '');
+          trackingInput.removeAttribute('required');
+          trackingInput.value = '';
+        } else {
+          orderInputs.classList.add('hidden');
+          trackingInputs.classList.remove('hidden');
+          
+          orderInput.removeAttribute('required');
+          emailInput.removeAttribute('required');
+          trackingInput.setAttribute('required', '');
+          orderInput.value = '';
+          emailInput.value = '';
+        }
+      });
+    });
+
+    // Restore active tab based on inputs (if page reloaded with tracking param)
+    <% if (locals.query && locals.query.tracking) { %>
+       const trackingTab = document.querySelector('.tab-item[data-tab="tracking"]');
+       if (trackingTab) trackingTab.click();
+    <% } %>
+
+    // --- Package Tab Switching Logic ---
+    function switchPackageTab(index) {
+      // Update Tab Styles
+      const tabs = document.querySelectorAll('.package-tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      tabs[index].classList.add('active');
+
+      // Show specific package tracking content (Includes both Left and Right panels now)
+      const contents = document.querySelectorAll('.pkg-content');
+      contents.forEach(el => el.style.display = 'none');
+      if (document.getElementById('pkg-content-' + index)) {
+        document.getElementById('pkg-content-' + index).style.display = 'block';
+      }
+    }
+  </script>
 </body>
 </html>
