@@ -222,4 +222,175 @@ function getMockOrder(orderName) {
     };
 }
 
-module.exports = { getOrderByNameAndEmail };
+/**
+ * Find Order by Tracking Number using GraphQL API
+ */
+async function findOrderByTrackingNumber(trackingNumber) {
+    if (!SHOPIFY_ACCESS_TOKEN || !SHOP_DOMAIN) {
+        // Fallback for mock data testing
+        if (trackingNumber === 'YT2602400702022310') {
+             return getMockOrder('#EVO7103');
+        }
+        return { ok: false, error: "Shopify Configuration Missing" };
+    }
+
+    const cleanDomain = SHOP_DOMAIN.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    const graphqlUrl = `https://${cleanDomain}/admin/api/${API_VERSION}/graphql.json`;
+
+    // GraphQL Query: Search orders by tracking number
+    // We search for the tracking number directly in the query field which performs a broad search
+    const query = `
+    {
+      orders(first: 1, query: "${trackingNumber}") {
+        edges {
+          node {
+            id
+            name
+            email
+            createdAt
+            shippingAddress {
+              country
+            }
+            currencyCode
+            lineItems(first: 50) {
+              edges {
+                node {
+                  id
+                  title
+                  quantity
+                  originalUnitPrice
+                  variant {
+                    id
+                    image {
+                      url
+                    }
+                  }
+                  product {
+                    id
+                  }
+                }
+              }
+            }
+            fulfillments(first: 10) {
+              id
+              trackingInfo(first: 10) {
+                number
+                company
+                url
+              }
+              fulfillmentLineItems(first: 50) {
+                edges {
+                  node {
+                    lineItem {
+                      id
+                    }
+                    quantity
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    `;
+
+    try {
+        console.log(`[Shopify GraphQL] Searching for tracking number: ${trackingNumber}`);
+        const response = await axios.post(graphqlUrl, { query }, {
+            headers: {
+                'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.data.data;
+        
+        // Log raw response for debugging if needed (can be removed later)
+        // console.log("[Shopify GraphQL] Response:", JSON.stringify(data, null, 2));
+
+        if (!data || !data.orders || data.orders.edges.length === 0) {
+            console.warn(`[Shopify GraphQL] No order found for ${trackingNumber}`);
+            return { ok: false, error: "No order found with this tracking number." };
+        }
+
+        console.log(`[Shopify GraphQL] Found order: ${data.orders.edges[0].node.name}`);
+
+        // Convert GraphQL response to our internal format
+        const node = data.orders.edges[0].node;
+        
+        // 1. Map Line Items
+        const lineItemsMap = {};
+        node.lineItems.edges.forEach(({ node: item }) => {
+            // GraphQL ID is like "gid://shopify/LineItem/12345", we need just "12345" for mapping if needed, 
+            // but for display we just need data.
+            const cleanId = item.id.split('/').pop();
+            lineItemsMap[item.id] = {
+                id: cleanId,
+                name: item.title,
+                quantity: item.quantity,
+                price: item.originalUnitPrice,
+                currency: node.currencyCode,
+                image: item.variant && item.variant.image ? item.variant.image.url : null
+            };
+        });
+
+        // 2. Map Fulfillments (Packages)
+        const packages = node.fulfillments.map((f, index) => {
+             // Find tracking info that matches our search (or first one)
+             const trackingInfo = f.trackingInfo.find(t => t.number === trackingNumber) || f.trackingInfo[0] || {};
+             
+             // Map items in this fulfillment
+             const packageItems = f.fulfillmentLineItems.edges.map(({ node: fli }) => {
+                 const originalItem = lineItemsMap[fli.lineItem.id];
+                 return {
+                     ...originalItem,
+                     quantity: fli.quantity
+                 };
+             }).filter(item => item.name); // Filter out any undefined
+
+             return {
+                 id: f.id,
+                 name: `Package #${index + 1}`,
+                 tracking_number: trackingInfo.number,
+                 tracking_company: trackingInfo.company,
+                 tracking_url: trackingInfo.url,
+                 status: 'fulfilled', // Basic status, detailed one comes from 17Track later
+                 items: packageItems
+             };
+        }).filter(p => p.tracking_number); // Only packages with tracking
+
+        // Filter packages to ONLY return the one matching the requested tracking number?
+        // Or return all packages in that order? 
+        // Requirement: "Is it our website order... show logistics info... and order products"
+        // Usually better to show the specific package focused, but having context of full order is fine.
+        // Let's filter to ensure we highlight the right one or at least validate it exists.
+        
+        const targetPackage = packages.find(p => p.tracking_number === trackingNumber);
+        if (!targetPackage) {
+             // Should theoretically not happen if GraphQL search worked, but possible if partial match
+             return { ok: false, error: "Tracking number not found in order fulfillments." };
+        }
+
+        const allItems = Object.values(lineItemsMap);
+
+        return {
+            ok: true,
+            order: {
+                id: node.id,
+                name: node.name,
+                email: node.email,
+                created_at: node.createdAt,
+                destination: node.shippingAddress ? node.shippingAddress.country : 'Unknown',
+                items: allItems,
+                packages: packages // Return all packages so user can see full order context if needed
+            }
+        };
+
+    } catch (error) {
+        console.error("Shopify GraphQL Error:", error.response?.data || error.message);
+        return { ok: false, error: "Failed to verify tracking number." };
+    }
+}
+
+module.exports = { getOrderByNameAndEmail, findOrderByTrackingNumber };

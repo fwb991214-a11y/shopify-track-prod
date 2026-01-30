@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
  * =========================
  */
 const { getTrackingInfo } = require("./services/trackingService");
-const { getOrderByNameAndEmail } = require("./services/shopifyService");
+const { getOrderByNameAndEmail, findOrderByTrackingNumber } = require("./services/shopifyService");
 const { verifyShopifySignature } = require("./utils/shopifyAuth");
 const logDebug = require('./logger');
 
@@ -127,22 +127,43 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
     } else {
         // --- Tracking Number Mode ---
         console.log(`Searching for Tracking: ${tracking}`);
-        const trackInfo = await getTrackingInfo(tracking);
         
-        if (!trackInfo || !trackInfo.ok) {
-             return res.render("error", { message: trackInfo.error || "Tracking not found" });
+        // 1. Verify if this tracking number belongs to our shop
+        const orderResult = await findOrderByTrackingNumber(tracking);
+        
+        if (!orderResult.ok) {
+            // Not found in our system -> Block access
+            return res.render("error", { message: "We could not find an order with this tracking number in our system." });
         }
 
-        // Construct a "Virtual" package
-        viewData.packages = [{
-            name: "Package #1",
-            tracking_number: tracking,
-            carrier: trackInfo.carrier,
-            status: trackInfo.status,
-            events: trackInfo.events || []
-        }];
+        // 2. Found Order! Set it to viewData
+        viewData.order = orderResult.order;
         
-        // We don't have order info, so viewData.order remains null
+        // 3. Get Logistics Info from 17Track
+        const trackInfo = await getTrackingInfo(tracking);
+        
+        // 4. Construct Package Data
+        // If 17Track fails or returns nothing, we still show the order info but with empty events
+        let pkgStatus = 'fulfilled';
+        let pkgEvents = [];
+        let pkgCarrier = 'Unknown';
+        
+        if (trackInfo && trackInfo.ok) {
+            pkgStatus = trackInfo.status;
+            pkgEvents = trackInfo.events || [];
+            pkgCarrier = trackInfo.carrier;
+        }
+
+        // Find the specific package in the order that matches this tracking number
+        // to display the correct items in the UI
+        const matchedPackage = viewData.order.packages.find(p => p.tracking_number === tracking) || viewData.order.packages[0];
+
+        viewData.packages = [{
+            ...matchedPackage, // Inherit items and name from Shopify Data
+            carrier: pkgCarrier || matchedPackage.tracking_company,
+            status: pkgStatus,
+            events: pkgEvents
+        }];
     }
 
     // Check if we have any data to show
