@@ -279,3 +279,123 @@
 [2026-01-29T09:03:21.438Z] Incoming request for tracking: YT2601500702858398
 [2026-01-29T09:03:21.438Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
 [2026-01-29T09:03:21.506Z] Service returned: {"ok":true,"tracking":"YT2601500702858398","status":"InTransit","carrier":"YunExpress","events":[{"time":"2026-01-28T16:05:00+03:00","desc":"Arrived at Transfer Center"},{"time":"2026-01-28T10:46:41+03:00","desc":"Loaded to truck to be sent to destination branch"},{"time":"2026-01-27T21:30:04+03:00","desc":"Handed over To TARK"},{"time":"2026-01-27T21:00:04+03:00","desc":"Released from Customs"},{"time":"2026-01-27T09:03:35+03:00","desc":"Customs Clearance In Progress"},{"time":"2026-01-26T08:52:27+03:00","desc":"Customs Clearance In Progress"},{"time":"2026-01-26T04:00:00+03:00","desc":"Arrived at destination"},{"time":"2026-01-25T15:05:00+08:00","desc":"Departed from origin"},{"time":"2026-01-24T17:00:46+08:00","desc":"Inbound by airline"},{"time":"2026-01-24T00:19:18+08:00","desc":"Departed from warehouse"},{"time":"2026-01-22T19:15:11+08:00","desc":"Ready to Ship"},{"time":"2026-01-22T19:10:59+08:00","desc":"Bagged"},{"time":"2026-01-22T14:31:40+08:00","desc":"Collected at warehouse. Collected by: [SZXOPS]"},{"time":"2026-01-22T14:31:40+08:00","desc":"Weighted"},{"time":"2026-01-22T12:58:09+08:00","desc":"Arrived at the origin international airport"},{"time":"2026-01-22T09:28:10+08:00","desc":"Shipment is in transit to next facility"},{"time":"2026-01-21T16:18:43+08:00","desc":"Arrived at sort facility"},{"time":"2026-01-21T13:40:42+08:00","desc":"Departed from sort facility"},{"time":"2026-01-21T07:34:00+08:00","desc":"Departed from sort facility"},{"time":"2026-01-21T00:40:04+08:00","desc":"Arrived at origin facility"},{"time":"2026-01-15T11:32:23+08:00","desc":"Shipment information received"}]}
+[2026-01-30T02:28:15.726Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:15.728Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:28:34.240Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:34.240Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:28:34.781Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:34.782Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:28:36.356Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:36.357Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:28:37.276Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:37.276Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:28:38.324Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:38.324Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:28:43.427Z] Incoming request for tracking: undefined
+[2026-01-30T02:28:43.427Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:29:22.154Z] Incoming request for tracking: undefined
+[2026-01-30T02:29:22.155Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:29:26.309Z] Incoming request for tracking: undefined
+[2026-01-30T02:29:26.310Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:32:40.332Z] Incoming request for tracking: 9235990357608734933678
+[2026-01-30T02:32:40.333Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:32:40.510Z] Service returned: {"ok":true,"tracking":"9235990357608734933678","status":"InTransit","carrier":"USPS","events":[{"time":"2026-01-29T19:29:00-06:00","desc":"Arrived at USPS Facility -> Your item arrived at our USPS facility in FRISCO, TX 75034 on January 29, 2026 at 7:29 pm. The item is currently in transit to the destination.","location":"FRISCO, TX, US"},{"time":"2026-01-29T13:11:00-06:00","desc":"Departed USPS Regional Facility","location":"COPPELL TX DISTRIBUTION CENTER, US"},{"time":"2026-01-29T02:24:00-06:00","desc":"Arrived at USPS Regional Facility","location":"COPPELL TX DISTRIBUTION CENTER, US"},{"time":"2026-01-29T01:37:00-06:00","desc":"Departed USPS Facility","location":"FORT WORTH, TX, US"},{"time":"2026-01-28T11:17:00-06:00","desc":"Arrived at USPS Regional Destination Facility","location":"FT WORTH TX PACKAGE SORTING CENTER, US"},{"time":"2026-01-27T21:02:00-06:00","desc":"Arrived at USPS Regional Facility","location":"FORT WORTH TX DISTRIBUTION CENTER, US"},{"time":"2026-01-27T19:49:00-06:00","desc":"Arrived at USPS Facility","location":"FORT WORTH, TX, US"},{"time":"2026-01-27T00:00:00-05:00","desc":"In Transit to Next Facility","location":"US"},{"time":"2026-01-27T17:52:00-06:00","desc":"Departed USPS Regional Facility","location":"DALLAS TX LOGISTICS CENTER, US"},{"time":"2026-01-26T10:48:00-06:00","desc":"Arrived at USPS Regional Facility","location":"DALLAS TX LOGISTICS CENTER, US"},{"time":"2026-01-25T06:57:00-08:00","desc":"Departed USPS Regional Facility","location":"LOS ANGELES CA DISTRIBUTION CENTER, US"},{"time":"2026-01-25T05:06:00-08:00","desc":"Arrived at USPS Regional Facility","location":"LOS ANGELES CA DISTRIBUTION CENTER, US"},{"time":"2026-01-25T04:26:00-08:00","desc":"Departed USPS Regional Facility","location":"ANAHEIM CA DISTRIBUTION CENTER, US"},{"time":"2026-01-24T17:45:00-08:00","desc":"Arrived at USPS Regional Origin Facility","location":"ANAHEIM CA DISTRIBUTION CENTER, US"},{"time":"2026-01-24T16:30:00-08:00","desc":"Accepted at USPS Origin Facility","location":"ONTARIO, CA, US"},{"time":"2026-01-23T14:04:00-08:00","desc":"Departed Shipping Partner Facility, USPS Awaiting Item","location":"ONTARIO, CA, US"},{"time":"2026-01-23T13:01:00-08:00","desc":"Arrived Shipping Partner Facility, USPS Awaiting Item","location":"ONTARIO, CA, US"},{"time":"2026-01-22T18:14:00-08:00","desc":"Shipping Label Created, USPS Awaiting Item","location":"ONTARIO, CA, US"}]}
+[2026-01-30T02:32:42.913Z] Incoming request for tracking: 9235990357608734933678
+[2026-01-30T02:32:42.914Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:32:42.953Z] Service returned: {"ok":true,"tracking":"9235990357608734933678","status":"InTransit","carrier":"USPS","events":[{"time":"2026-01-29T19:29:00-06:00","desc":"Arrived at USPS Facility -> Your item arrived at our USPS facility in FRISCO, TX 75034 on January 29, 2026 at 7:29 pm. The item is currently in transit to the destination.","location":"FRISCO, TX, US"},{"time":"2026-01-29T13:11:00-06:00","desc":"Departed USPS Regional Facility","location":"COPPELL TX DISTRIBUTION CENTER, US"},{"time":"2026-01-29T02:24:00-06:00","desc":"Arrived at USPS Regional Facility","location":"COPPELL TX DISTRIBUTION CENTER, US"},{"time":"2026-01-29T01:37:00-06:00","desc":"Departed USPS Facility","location":"FORT WORTH, TX, US"},{"time":"2026-01-28T11:17:00-06:00","desc":"Arrived at USPS Regional Destination Facility","location":"FT WORTH TX PACKAGE SORTING CENTER, US"},{"time":"2026-01-27T21:02:00-06:00","desc":"Arrived at USPS Regional Facility","location":"FORT WORTH TX DISTRIBUTION CENTER, US"},{"time":"2026-01-27T19:49:00-06:00","desc":"Arrived at USPS Facility","location":"FORT WORTH, TX, US"},{"time":"2026-01-27T00:00:00-05:00","desc":"In Transit to Next Facility","location":"US"},{"time":"2026-01-27T17:52:00-06:00","desc":"Departed USPS Regional Facility","location":"DALLAS TX LOGISTICS CENTER, US"},{"time":"2026-01-26T10:48:00-06:00","desc":"Arrived at USPS Regional Facility","location":"DALLAS TX LOGISTICS CENTER, US"},{"time":"2026-01-25T06:57:00-08:00","desc":"Departed USPS Regional Facility","location":"LOS ANGELES CA DISTRIBUTION CENTER, US"},{"time":"2026-01-25T05:06:00-08:00","desc":"Arrived at USPS Regional Facility","location":"LOS ANGELES CA DISTRIBUTION CENTER, US"},{"time":"2026-01-25T04:26:00-08:00","desc":"Departed USPS Regional Facility","location":"ANAHEIM CA DISTRIBUTION CENTER, US"},{"time":"2026-01-24T17:45:00-08:00","desc":"Arrived at USPS Regional Origin Facility","location":"ANAHEIM CA DISTRIBUTION CENTER, US"},{"time":"2026-01-24T16:30:00-08:00","desc":"Accepted at USPS Origin Facility","location":"ONTARIO, CA, US"},{"time":"2026-01-23T14:04:00-08:00","desc":"Departed Shipping Partner Facility, USPS Awaiting Item","location":"ONTARIO, CA, US"},{"time":"2026-01-23T13:01:00-08:00","desc":"Arrived Shipping Partner Facility, USPS Awaiting Item","location":"ONTARIO, CA, US"},{"time":"2026-01-22T18:14:00-08:00","desc":"Shipping Label Created, USPS Awaiting Item","location":"ONTARIO, CA, US"}]}
+[2026-01-30T02:32:46.103Z] Incoming request for tracking: undefined
+[2026-01-30T02:32:46.104Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:34:05.913Z] Incoming request for tracking: UK876094897YP
+[2026-01-30T02:34:05.913Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:34:07.151Z] Service returned: {"ok":true,"tracking":"UK876094897YP","status":"InTransit","carrier":"YANWEN","events":[{"time":"2026-01-30T06:09:26+08:00","desc":"Processing information input","location":""},{"time":"2026-01-29T18:32:08+08:00","desc":"Yanwen Pickup Scan","location":""},{"time":"2026-01-29T10:15:04+08:00","desc":"Order processed by shipper","location":""}]}
+[2026-01-30T02:34:24.848Z] Incoming request for tracking: undefined
+[2026-01-30T02:34:24.849Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:35:11.393Z] Incoming request for tracking: undefined
+[2026-01-30T02:35:11.393Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:35:34.383Z] Incoming request for tracking: UK862019675YP
+[2026-01-30T02:35:34.384Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:35:39.397Z] Service returned: {"ok":false,"error":"Service Error"}
+[2026-01-30T02:35:59.501Z] Incoming request for tracking: undefined
+[2026-01-30T02:35:59.501Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:36:09.562Z] Incoming request for tracking: UK862019675YP
+[2026-01-30T02:36:09.562Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:36:17.846Z] Service returned: {"ok":true,"tracking":"UK862019675YP","status":"Registered","carrier":"Detecting...","events":[{"time":"2026/1/30 10:36:17","desc":"Tracking number registered. System is retrieving details from carrier..."}]}
+[2026-01-30T02:36:45.642Z] Incoming request for tracking: undefined
+[2026-01-30T02:36:45.642Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:38:26.404Z] Incoming request for tracking: undefined
+[2026-01-30T02:38:26.405Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:39:00.328Z] Incoming request for tracking: YT2602900702800649
+[2026-01-30T02:39:00.329Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:39:00.395Z] Service returned: {"ok":true,"tracking":"YT2602900702800649","status":"InfoReceived","carrier":"YunExpress","events":[{"time":"2026-01-29T10:51:05+08:00","desc":"Shipment information received","location":""}]}
+[2026-01-30T02:39:18.977Z] Incoming request for tracking: undefined
+[2026-01-30T02:39:18.978Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:39:51.046Z] Incoming request for tracking:  YT2638621437596839
+[2026-01-30T02:39:51.046Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:39:52.189Z] Service returned: {"ok":true,"tracking":" YT2638621437596839","status":"Delivered","carrier":"YunExpress","events":[{"time":"2026-01-26T11:35:46-08:00","desc":"Delivered, Door/Yard. For Delivery Issues & Tracking Support, Please contact the sender.","location":"Mission Viejo"},{"time":"2026-01-26T06:46:26-08:00","desc":"Out for Delivery","location":"Mission Viejo"},{"time":"2026-01-26T06:41:26-08:00","desc":"Departed Carrier's Delivery Station","location":"Vernon"},{"time":"2026-01-26T06:36:26-08:00","desc":"Arrived at Carrier's Delivery Station","location":"Vernon"},{"time":"2026-01-25T20:57:24-08:00","desc":"Departed Carrier's Regional Hub","location":"Vernon"},{"time":"2026-01-25T06:38:10-08:00","desc":"Arrived at Carrier's Regional Hub","location":"Vernon"},{"time":"2026-01-25T00:24:29-08:00","desc":"Arrived at Carrier's Regional Hub","location":""},{"time":"2026-01-24T11:43:31-08:00","desc":"Picked up by Shipping Partner, Carrier's Awaiting Item","location":"Vernon"},{"time":"2026-01-23T20:08:44-08:00","desc":"Shipping Label Created","location":""}]}
+[2026-01-30T02:43:22.177Z] Incoming request for tracking: undefined
+[2026-01-30T02:43:22.177Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:43:25.477Z] Incoming request for tracking: UK867597255YP
+[2026-01-30T02:43:25.478Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:43:26.622Z] Service returned: {"ok":true,"tracking":"UK867597255YP","status":"InTransit","carrier":"YANWEN","events":[{"time":"2026-01-29T20:26:00+08:00","desc":"Port of departure - Departure","location":""},{"time":"2026-01-27T17:44:15+08:00","desc":"Port of departure - Received by carrier","location":""},{"time":"2026-01-27T17:44:15+08:00","desc":"International shipment release - Export","location":""},{"time":"2026-01-27T13:52:27+08:00","desc":"Arrived at domestic terminal station","location":""},{"time":"2026-01-27T11:49:21+08:00","desc":"Yanwen facility - Outbound","location":""},{"time":"2026-01-26T17:44:56-05:00","desc":"Shipping Order Created.","location":"Gwinnett Village, GA"},{"time":"2026-01-27T06:44:54+08:00","desc":"Processing information input","location":""},{"time":"2026-01-26T19:24:18+08:00","desc":"Yanwen Pickup Scan","location":""},{"time":"2026-01-26T14:14:35+08:00","desc":"Order processed by shipper","location":""}]}
+[2026-01-30T02:43:54.789Z] Incoming request for tracking: undefined
+[2026-01-30T02:43:54.790Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:45:04.081Z] Incoming request for tracking: undefined
+[2026-01-30T02:45:04.082Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:45:31.534Z] Incoming request for tracking: UK862019675YP
+[2026-01-30T02:45:31.535Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:45:31.696Z] Service returned: {"ok":true,"tracking":"UK862019675YP","status":"InTransit","carrier":"YANWEN","events":[{"time":"2026-01-28T17:40:00-05:00","desc":"Port of destination - Arrival","location":""},{"time":"2026-01-28T13:29:00+08:00","desc":"Port of departure - Departure","location":""},{"time":"2026-01-25T15:37:27+08:00","desc":"Port of departure - Received by carrier","location":""},{"time":"2026-01-25T15:37:27+08:00","desc":"International shipment release - Export","location":""},{"time":"2026-01-25T07:38:22+08:00","desc":"Arrived at domestic terminal station","location":""},{"time":"2026-01-25T04:49:41+08:00","desc":"Yanwen facility - Outbound","location":""},{"time":"2026-01-24T12:31:17-05:00","desc":"Shipping Order Created.","location":"Gwinnett Village, GA"},{"time":"2026-01-25T01:31:15+08:00","desc":"Processing information input","location":""},{"time":"2026-01-24T18:59:47+08:00","desc":"Yanwen Pickup Scan","location":""},{"time":"2026-01-24T10:08:13+08:00","desc":"Order processed by shipper","location":""}]}
+[2026-01-30T02:45:35.559Z] Incoming request for tracking: undefined
+[2026-01-30T02:45:35.561Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:45:42.417Z] Incoming request for tracking: undefined
+[2026-01-30T02:45:42.418Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:48:19.081Z] Incoming request for tracking: YT2602400701713398
+[2026-01-30T02:48:19.082Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:48:20.340Z] Service returned: {"ok":true,"tracking":"YT2602400701713398","status":"InTransit","carrier":"YunExpress","events":[{"time":"2026-01-28T18:01:57+12:00","desc":"Your parcel is in our care, Your parcel has arrived at our Aramex depot.","location":"Sydney"},{"time":"2026-01-28T14:24:42+11:00","desc":"Delivered to local carrier","location":""},{"time":"2026-01-28T15:11:56+12:00","desc":"In transit, Your parcel has left our facility and is on its way to the next destination.","location":"Sydney"},{"time":"2026-01-28T15:10:56+12:00","desc":"Picked up from sender, Our courier has picked up your parcel from the sender. You will receive updates as your parcel moves through the delivery network.","location":"Sydney"},{"time":"2026-01-28T15:10:56+12:00","desc":"Processed by customs, We have received your parcel and it has been processed successfully by customs.","location":"Sydney"},{"time":"2026-01-27T16:08:00+11:00","desc":"Clearance processing completed - Import","location":"SYDNEY, NEW SOUTH WALES, AU"},{"time":"2026-01-27T15:08:00+11:00","desc":"International flight has arrived","location":"AU"},{"time":"2026-01-27T15:04:15+11:00","desc":"In clearance processing - Import","location":""},{"time":"2026-01-27T01:58:00+08:00","desc":"International flight has departed","location":""},{"time":"2026-01-25T19:39:47+08:00","desc":"Arrived at the origin international airport","location":"CN"},{"time":"2026-01-25T09:39:49+08:00","desc":"Shipment is in transit to next facility","location":"Mainland China, CN"},{"time":"2026-01-24T22:38:24+08:00","desc":"Departed from sort facility","location":"Mainland China, CN"},{"time":"2026-01-24T22:21:32+08:00","desc":"Arrived at origin facility","location":"Mainland China, CN"},{"time":"2026-01-24T10:08:10+08:00","desc":"Shipment information received","location":""}]}
+[2026-01-30T02:48:23.239Z] Incoming request for tracking: undefined
+[2026-01-30T02:48:23.241Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:48:26.122Z] Incoming request for tracking: undefined
+[2026-01-30T02:48:26.123Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:48:41.827Z] Incoming request for tracking: undefined
+[2026-01-30T02:48:41.828Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:49:02.312Z] Incoming request for tracking: 1
+[2026-01-30T02:49:02.312Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:49:02.411Z] Service returned: {"ok":false,"error":"Tracking number not found and could not be registered."}
+[2026-01-30T02:49:03.488Z] Incoming request for tracking: undefined
+[2026-01-30T02:49:03.489Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:49:06.293Z] Incoming request for tracking: 1
+[2026-01-30T02:49:06.294Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T02:49:06.356Z] Service returned: {"ok":false,"error":"Tracking number not found and could not be registered."}
+[2026-01-30T02:49:18.026Z] Incoming request for tracking: undefined
+[2026-01-30T02:49:18.027Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:36:05.747Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:36:05.749Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:38:22.999Z] Incoming request. Tracking: undefined, Order: #EVO7114, Email: kamilov777@yahoo.com
+[2026-01-30T03:38:23.000Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:38:23.000Z] Verifying Order: #EVO7114 for Email: kamilov777@yahoo.com
+[2026-01-30T03:38:24.235Z] Order Verified. Found Tracking Number: UK866392644YP
+[2026-01-30T03:38:25.393Z] Service returned: {"ok":true,"tracking":"UK866392644YP","status":"InTransit","carrier":"YANWEN","events":[{"time":"2026-01-29T07:26:10+08:00","desc":"Arrived at domestic terminal station","location":""},{"time":"2026-01-27T18:45:25+08:00","desc":"Yanwen facility - Outbound","location":""},{"time":"2026-01-26T16:32:28-06:00","desc":"Shipping Label Created","location":"Arlington Heights, IL"},{"time":"2026-01-27T06:32:26+08:00","desc":"Processing information input","location":""},{"time":"2026-01-26T19:24:18+08:00","desc":"Yanwen Pickup Scan","location":""},{"time":"2026-01-26T10:22:32+08:00","desc":"Order processed by shipper","location":""}]}
+[2026-01-30T03:38:31.971Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:38:31.972Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:38:57.548Z] Incoming request. Tracking: undefined, Order: #EVO7114, Email: kamilov77711@yahoo.com
+[2026-01-30T03:38:57.549Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:38:57.550Z] Verifying Order: #EVO7114 for Email: kamilov77711@yahoo.com
+[2026-01-30T03:39:12.413Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:39:12.413Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:39:46.372Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:39:46.373Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:40:38.696Z] Incoming request. Tracking: undefined, Order: #EVO7112, Email: kenpysick@gmail.com
+[2026-01-30T03:40:38.697Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:40:38.697Z] Verifying Order: #EVO7112 for Email: kenpysick@gmail.com
+[2026-01-30T03:40:39.607Z] Order Verified. Found Tracking Number: YT2602600703644109
+[2026-01-30T03:40:40.757Z] Service returned: {"ok":true,"tracking":"YT2602600703644109","status":"InTransit","carrier":"YunExpress","events":[{"time":"2026-01-28T03:44:37+08:00","desc":"Arrived at the origin international airport","location":"CN"},{"time":"2026-01-27T17:44:40+08:00","desc":"Shipment is in transit to next facility","location":"Mainland China, CN"},{"time":"2026-01-27T07:23:06+08:00","desc":"Departed from sort facility","location":"Mainland China, CN"},{"time":"2026-01-27T05:07:40+08:00","desc":"Arrived at origin facility","location":"Mainland China, CN"},{"time":"2026-01-26T10:50:30+08:00","desc":"Shipment information received","location":""}]}
+[2026-01-30T03:41:00.382Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:41:00.383Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:42:24.524Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:42:24.525Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:43:51.650Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:43:51.651Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:47:31.934Z] Incoming request. Tracking: undefined, Order: undefined, Email: undefined
+[2026-01-30T03:47:31.934Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:47:38.550Z] Incoming request. Tracking: undefined, Order: #EV0001, Email: fwb991214@gmail.com
+[2026-01-30T03:47:38.552Z] ⚠️ Request signature verification failed (not from Shopify Proxy?)
+[2026-01-30T03:47:38.554Z] Verifying Order: #EV0001 for Email: fwb991214@gmail.com

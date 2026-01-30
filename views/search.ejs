@@ -20,84 +20,151 @@
     .card {
       background: white;
       padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(63, 63, 68, 0.15);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       text-align: center;
       width: 100%;
-      max-width: 480px;
+      max-width: 420px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
     }
     h1 {
       margin-top: 0;
       color: #212b36;
-      font-size: 24px;
+      font-size: 22px;
       margin-bottom: 32px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
     .label {
       display: block;
       text-align: left;
-      font-weight: 500;
+      font-weight: 600;
       margin-bottom: 8px;
-      color: #454f5b;
-      font-size: 14px;
+      color: #637381;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 16px;
+    .input-wrapper {
+      position: relative;
       margin-bottom: 24px;
-      border: 1px solid #c4cdd5;
-      border-radius: 4px;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #dfe3e8;
+      border-radius: 8px;
       box-sizing: border-box;
       font-size: 16px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
       color: #212b36;
+      background-color: #fff;
       -webkit-appearance: none;
     }
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    input[type="email"]:focus {
       border-color: #008060;
       outline: none;
-      box-shadow: 0 0 0 1px #008060;
+      box-shadow: 0 0 0 4px rgba(0, 128, 96, 0.1);
     }
+    input[type="text"]:read-only,
+    input[type="email"]:read-only {
+      background-color: #f4f6f8;
+      color: #919eab;
+      border-color: #f4f6f8;
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .input-group:last-child {
+      margin-bottom: 32px;
+    }
+    
     button {
       background-color: #008060;
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
       font-weight: 600;
       width: 100%;
-      transition: background-color 0.2s;
-      box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+      height: 52px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 12px rgba(0, 128, 96, 0.2);
       position: relative;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 48px; /* Fixed height to prevent jump when content changes */
     }
     button:hover {
       background-color: #006e52;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 128, 96, 0.3);
     }
-    button:disabled {
-      background-color: #008060; /* Keep it green but maybe opacity */
-      opacity: 0.8;
-      cursor: wait;
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0, 128, 96, 0.2);
     }
     
+    /* Loading State - Morphing Animation */
+    button.is-loading {
+      width: 52px; /* Morph into a circle */
+      border-radius: 50%;
+      background-color: #008060; /* Keep original color */
+      color: transparent; /* Hide text */
+      pointer-events: none;
+      margin: 0 auto; /* Center the circle */
+      padding: 0;
+      box-shadow: none;
+    }
+    
+    button.is-loading .btn-text {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
     .spinner {
-      display: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: #fff;
-      animation: spin 1s linear infinite;
-      margin-right: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    button.is-loading .spinner {
+      opacity: 1;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .btn-text {
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
     
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Fade out form elements when loading */
+    .form-content {
+      transition: opacity 0.5s ease;
+    }
+    .form-content.faded {
+      opacity: 0.5;
+      pointer-events: none;
     }
 
     @media (max-width: 600px) {
@@ -116,43 +183,80 @@
 <div class="card">
   <h1>Track Your Order</h1>
   <form method="GET" id="trackForm">
-    
-    <label class="label" for="tracking">Tracking Number</label>
+    <div class="form-content">
+      
+      <!-- Order Number Input -->
+      <div class="input-group">
+        <label class="label" for="order">Order Number</label>
+        <div class="input-wrapper">
+          <input
+            id="order"
+            type="text"
+            name="order"
+            placeholder="e.g. #EV0000"
+            required
+            class="input"
+            autocomplete="off"
+          >
+        </div>
+      </div>
 
-    <input
-      id="tracking"
-      type="text"
-      name="tracking"
-      placeholder="e.g. 1234567890"
-      required
-      class="input"
-    >
+      <!-- Email Input -->
+      <div class="input-group">
+        <label class="label" for="email">Email Address</label>
+        <div class="input-wrapper">
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="e.g. your@email.com"
+            required
+            class="input"
+            autocomplete="email"
+          >
+        </div>
+      </div>
+
+    </div>
 
     <button type="submit" id="trackBtn">
-      <span class="spinner"></span>
-      <span class="btn-text">Track</span>
+      <div class="spinner"></div>
+      <span class="btn-text">Find Order</span>
     </button>
   </form>
 </div>
 
 <script>
   document.getElementById('trackForm').addEventListener('submit', function(e) {
-    const input = document.getElementById('tracking');
+    const orderInput = document.getElementById('order');
+    const emailInput = document.getElementById('email');
     const btn = document.getElementById('trackBtn');
-    const spinner = btn.querySelector('.spinner');
-    const btnText = btn.querySelector('.btn-text');
-
-    if (!input.value.trim()) {
-      e.preventDefault(); // Don't submit empty
+    
+    if (!orderInput.value.trim() || !emailInput.value.trim()) {
+      e.preventDefault();
       return;
     }
 
-    // Show loading state
-    btn.disabled = true;
-    spinner.style.display = 'inline-block';
-    btnText.textContent = 'Tracking...';
+    // Trigger the morphing animation
+    btn.classList.add('is-loading');
     
-    // Allow form to continue submitting...
+    // Lock inputs
+    orderInput.readOnly = true;
+    emailInput.readOnly = true;
+    orderInput.blur();
+    emailInput.blur();
+  });
+
+  // Reset state when user navigates back (BFCache)
+  window.addEventListener('pageshow', function(event) {
+    const orderInput = document.getElementById('order');
+    const emailInput = document.getElementById('email');
+    const btn = document.getElementById('trackBtn');
+    
+    // Always remove loading state on page show
+    if (btn) btn.classList.remove('is-loading');
+    if (orderInput) orderInput.readOnly = false;
+    if (emailInput) emailInput.readOnly = false;
   });
 </script>
 
