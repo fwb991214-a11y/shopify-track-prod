@@ -58,7 +58,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/proxy/track", async (req, res) => {
+app.get(["/proxy/track", "/proxy"], async (req, res) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
 
   const { tracking, order, email } = req.query;
