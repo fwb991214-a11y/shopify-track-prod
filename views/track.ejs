@@ -489,8 +489,48 @@
               <div class="main-grid">
                 <!-- Left Panel: Tracking Info -->
                 <div class="left-panel <%= (pkg.events && pkg.events.length > 0) ? 'has-events' : '' %>">
+                  
+                  <!-- Translation Bar -->
+                  <div class="translate-bar" style="margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #dfe3e8; padding-bottom: 10px;">
+                    <span style="font-weight: 700; font-size: 16px; color: #212b36;">All track information</span>
+                    <div style="display: flex; align-items: center;">
+                       <span style="color: #637381; font-size: 13px; margin-right: 8px;">Translate:</span>
+                       <select class="lang-select" onchange="translateTracking(this, '<%= pkg.tracking_number %>', <%= index %>)" style="border: 1px solid #dfe3e8; border-radius: 4px; padding: 4px 8px; color: #008060; font-weight: 500; cursor: pointer; outline: none; background: #fff; font-size: 13px;">
+                          <option value="">Original (<%= pkg.original_language || 'Detected' %>)</option>
+                          <option value="zh-CN">中文简体</option>
+                          <option value="nl">Nederlands</option>
+                          <option value="en">English</option>
+                          <option value="fr">Français</option>
+                          <option value="de">Deutsch</option>
+                          <option value="el">Ελληνικά</option>
+                          <option value="he">עִברִית</option>
+                          <option value="hi">हिन्दी</option>
+                          <option value="id">Bahasa Indonesia</option>
+                          <option value="it">Italiano</option>
+                          <option value="ja">日本語</option>
+                          <option value="ko">한국어</option>
+                          <option value="pt">Português</option>
+                          <option value="ru">Русский</option>
+                          <option value="es">Español</option>
+                          <option value="sv">Svenska</option>
+                          <option value="th">ไทย</option>
+                          <option value="tr">Türkçe</option>
+                          <option value="vi">Tiếng Việt</option>
+                          <option value="ms">Bahasa Melayu</option>
+                          <option value="zu">isiZulu</option>
+                          <option value="tl">Filipino</option>
+                          <option value="is">Íslenska</option>
+                          <option value="da">Dansk</option>
+                          <option value="pl">Polski</option>
+                          <option value="no">Norsk</option>
+                          <option value="hu">Magyar</option>
+                          <option value="ro">Română</option>
+                       </select>
+                    </div>
+                  </div>
+
                   <% if (pkg.events && pkg.events.length > 0) { %>
-                    <div class="timeline">
+                    <div class="timeline" id="timeline-<%= index %>">
                       <% pkg.events.forEach((event, i) => { %>
                         <div class="event <%= i === 0 ? 'latest' : '' %>">
                           <div class="event-time">
@@ -662,18 +702,82 @@
         let isValid = false;
         
         if (activeTab === 'order') {
-           if (document.getElementById('order').value.trim() && document.getElementById('email').value.trim()) isValid = true;
+          if (document.getElementById('order').value.trim() && document.getElementById('email').value.trim()) {
+            isValid = true;
+          }
         } else {
-           if (document.getElementById('tracking').value.trim()) isValid = true;
+          if (document.getElementById('tracking').value.trim()) {
+            isValid = true;
+          }
         }
 
         if (isValid) {
-            // Show loader with a slight delay to ensure it renders if the main thread is busy immediately (though unlikely here)
-            requestAnimationFrame(() => {
-                loader.classList.add('visible');
-            });
+          // Show loader smoothly
+          requestAnimationFrame(() => {
+            loader.classList.add('visible');
+          });
         }
       });
+    }
+
+    // --- Translation Logic ---
+    async function translateTracking(selectEl, trackingNumber, pkgIndex) {
+        const langCode = selectEl.value;
+        if (!langCode) {
+            window.location.reload();
+            return;
+        }
+
+        const timelineEl = document.getElementById('timeline-' + pkgIndex);
+        if (!timelineEl) return;
+
+        // Show local loading state
+        const originalContent = timelineEl.innerHTML;
+        timelineEl.innerHTML = '<div style="text-align:center; padding: 30px; color: #637381;">Translating... <div class="spinner" style="width:20px; height:20px; border-width:2px; display:inline-block; vertical-align:middle; margin-left:10px;"></div></div>';
+
+        try {
+            const response = await fetch('/proxy/translate-track', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tracking: trackingNumber, lang: langCode })
+            });
+
+            const data = await response.json();
+
+            if (data.ok && data.events && data.events.length > 0) {
+                // Render new events
+                let html = '';
+                data.events.forEach((event, i) => {
+                     let timeDisplay = event.time;
+                     try {
+                        const date = new Date(event.time);
+                        if (!isNaN(date.getTime())) {
+                            timeDisplay = date.toLocaleString();
+                        }
+                     } catch (e) {}
+                     
+                     html += `
+                        <div class="event ${i === 0 ? 'latest' : ''}">
+                          <div class="event-time">${timeDisplay}</div>
+                          <div class="event-desc">${event.desc || event.description}</div>
+                          <div class="event-location">${event.location || ''}</div>
+                        </div>
+                     `;
+                });
+                timelineEl.innerHTML = html;
+            } else {
+                alert('Translation unavailable for this tracking number.');
+                timelineEl.innerHTML = originalContent; // Revert
+                selectEl.value = ""; // Reset dropdown
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Translation failed. Please try again.');
+            timelineEl.innerHTML = originalContent; // Revert
+            selectEl.value = ""; // Reset dropdown
+        }
     }
   </script>
 </body>

@@ -1,7 +1,18 @@
 const axios = require("axios");
+const { translate } = require('google-translate-api-x');
 
 const TRACK17_KEY = process.env.TRACK17_KEY;
 const API_BASE_URL = "https://api.17track.net/track/v2.4";
+
+const LANG_MAP = {
+  1033: 'en',
+  2052: 'zh-CN',
+  1036: 'fr',
+  1034: 'es',
+  1031: 'de',
+  1040: 'it',
+  1041: 'ja'
+};
 
 /**
  * Map 17TRACK internal status codes to human readable strings
@@ -89,9 +100,65 @@ async function fetchFrom17Track(tracking) {
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
+ * Change tracking information (e.g., language)
+ */
+async function changeTrackingInfo(trackingNumber, langCode) {
+  if (!TRACK17_KEY || TRACK17_KEY === "YOUR_17TRACK_KEY_HERE") {
+    return { ok: false, error: "API Key not configured" };
+  }
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/changeinfo`,
+      [
+        {
+          number: trackingNumber,
+          lang: langCode
+        }
+      ],
+      {
+        headers: {
+          "17token": TRACK17_KEY,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const data = response.data;
+    if (data.code === 0 && data.data.accepted.length > 0) {
+      return { ok: true };
+    } else {
+      return { ok: false, error: "Change info failed" };
+    }
+  } catch (error) {
+    console.error("Error changing tracking info:", error.message);
+    return { ok: false, error: error.message };
+  }
+}
+
+/**
+ * Detect language from events
+ */
+function detectLanguage(events) {
+  if (!events || !Array.isArray(events) || events.length === 0) return 'Unknown';
+  
+  for (const event of events) {
+    const text = (event.desc || event.description || "") + (event.location || "");
+    if (!text) continue;
+    
+    if (/[\u4e00-\u9fa5]/.test(text)) return 'Chinese';
+    if (/[а-яА-Я]/.test(text)) return 'Russian';
+    if (/[\uac00-\ud7af]/.test(text)) return 'Korean';
+    if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return 'Japanese';
+  }
+  
+  return 'English';
+}
+
+/**
  * Get tracking info from 17TRACK
  */
-async function getTrackingInfo(tracking) {
+async function getTrackingInfo(tracking, lang = null) {
   // Check for mock data trigger for testing
   if (tracking === "TEST123_MOCK") {
     return {
@@ -113,6 +180,13 @@ async function getTrackingInfo(tracking) {
   }
 
   try {
+    // If language is specified, try to update it first
+    if (lang) {
+        await changeTrackingInfo(tracking, lang);
+        // Add a small delay to ensure update propagates
+        await delay(500); 
+    }
+
     // 1. First attempt to get tracking info
     let data = await fetchFrom17Track(tracking);
     let trackData = null;
@@ -209,12 +283,25 @@ async function getTrackingInfo(tracking) {
           carrier = "Carrier ID: " + trackData.w1;
       }
 
+      // Detect original language before translation
+      let originalLang = detectLanguage(events);
+
+      // Apply Google Translation if requested
+      const targetLang = (typeof LANG_MAP !== 'undefined' && LANG_MAP[lang]) ? LANG_MAP[lang] : lang;
+      
+      console.log(`Checking translation: lang=${lang}, target=${targetLang}`);
+      if (targetLang) {
+          console.log(`Translating events to ${targetLang}...`);
+          events = await translateEvents(events, targetLang);
+      }
+
       return {
         ok: true,
         tracking,
         status: status,
         carrier: carrier,
-        events: events
+        events: events,
+        original_language: originalLang
       };
     }
 
@@ -224,6 +311,34 @@ async function getTrackingInfo(tracking) {
     console.error("Error fetching tracking info:", error.message);
     return { ok: false, error: "Service Error" };
   }
+}
+
+async function translateEvents(events, targetLang) {
+  if (!events || !Array.isArray(events) || events.length === 0) return events;
+  
+  // Create an array of promises to translate descriptions and locations in parallel
+  const promises = events.map(async (event) => {
+    let newEvent = { ...event };
+    try {
+      // Handle 'description' or 'desc' field
+      const textToTranslate = event.description || event.desc;
+      if (textToTranslate && textToTranslate.trim()) {
+        const res = await translate(textToTranslate, { to: targetLang });
+        if (event.description) newEvent.description = res.text;
+        if (event.desc) newEvent.desc = res.text;
+      }
+      
+      if (event.location && event.location.trim()) {
+         const res = await translate(event.location, { to: targetLang });
+         newEvent.location = res.text;
+      }
+    } catch (e) {
+      console.error("Translation failed for event:", e.message);
+    }
+    return newEvent;
+  });
+
+  return Promise.all(promises);
 }
 
 module.exports = { getTrackingInfo };

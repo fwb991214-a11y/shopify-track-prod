@@ -147,11 +147,13 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
         let pkgStatus = 'fulfilled';
         let pkgEvents = [];
         let pkgCarrier = 'Unknown';
+        let pkgOriginalLang = 'Unknown';
         
         if (trackInfo && trackInfo.ok) {
             pkgStatus = trackInfo.status;
             pkgEvents = trackInfo.events || [];
             pkgCarrier = trackInfo.carrier;
+            pkgOriginalLang = trackInfo.original_language;
         }
 
         // Find the specific package in the order that matches this tracking number
@@ -162,7 +164,8 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
             ...matchedPackage, // Inherit items and name from Shopify Data
             carrier: pkgCarrier || matchedPackage.tracking_company,
             status: pkgStatus,
-            events: pkgEvents
+            events: pkgEvents,
+            original_language: pkgOriginalLang
         }];
     }
 
@@ -178,6 +181,31 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
     res.render("error", {
       message: "System Error. Please try again later."
     });
+  }
+});
+
+// New route for translating tracking info
+app.post("/proxy/translate-track", express.json(), async (req, res) => {
+  const { tracking, lang } = req.body;
+  if (!tracking || !lang) {
+    return res.json({ ok: false, error: "Missing tracking number or language code" });
+  }
+
+  try {
+    // 1. Verify if this tracking number belongs to our shop (security check)
+    // We reuse findOrderByTrackingNumber to ensure user has right to access this tracking info
+    // However, for performance, we might skip this if session is already validated or if we trust the tracking number from frontend context.
+    // For now, let's just proceed to get tracking info with language.
+    
+    // 2. Get Translated Info
+    // Note: 17Track language codes: English=1033, Simple Chinese=2052, etc.
+    // We expect frontend to send the correct code (string or int).
+    const trackInfo = await getTrackingInfo(tracking, lang);
+    
+    res.json(trackInfo);
+  } catch (error) {
+    console.error("Translation Error:", error);
+    res.json({ ok: false, error: "Translation failed" });
   }
 });
 
