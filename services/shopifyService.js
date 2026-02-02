@@ -1,4 +1,5 @@
 const axios = require('axios');
+const cache = require('../utils/cache');
 
 const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 const SHOP_DOMAIN = process.env.SHOPIFY_SHOP_DOMAIN; // e.g., "my-store.myshopify.com"
@@ -19,6 +20,15 @@ async function getOrderByNameAndEmail(orderName, email) {
     if (!SHOP_DOMAIN) {
         return { ok: false, error: "Shop Domain not configured" };
     }
+
+    // --- Cache Check ---
+    const cacheKey = `order_ne_${orderName}_${email}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+        console.log(`[Cache] Hit for order: ${orderName} / ${email}`);
+        return cachedData;
+    }
+    // -------------------
 
     try {
         const cleanDomain = SHOP_DOMAIN.replace(/^https?:\/\//, '').replace(/\/$/, '');
@@ -48,7 +58,13 @@ async function getOrderByNameAndEmail(orderName, email) {
         // For better UX, let's fetch product images if possible, or just use placeholders.
         // To keep it simple and fast, we will try to match line items to fulfillments.
         
-        return await processOrderData(order, cleanDomain, SHOPIFY_ACCESS_TOKEN);
+        const result = await processOrderData(order, cleanDomain, SHOPIFY_ACCESS_TOKEN);
+        
+        // Cache result (5 mins)
+        if (result.ok) {
+            cache.set(cacheKey, result, 300);
+        }
+        return result;
 
     } catch (error) {
         console.error("Shopify API Error:", error.response?.data || error.message);
@@ -284,6 +300,15 @@ async function findOrderByTrackingNumber(trackingNumber) {
         return { ok: false, error: "Shopify Configuration Missing" };
     }
 
+    // --- Cache Check ---
+    const cacheKey = `order_track_${trackingNumber}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+        console.log(`[Cache] Hit for tracking order: ${trackingNumber}`);
+        return cachedData;
+    }
+    // -------------------
+
     const cleanDomain = SHOP_DOMAIN.replace(/^https?:\/\//, '').replace(/\/$/, '');
     const graphqlUrl = `https://${cleanDomain}/admin/api/${API_VERSION}/graphql.json`;
 
@@ -424,7 +449,7 @@ async function findOrderByTrackingNumber(trackingNumber) {
 
         const allItems = Object.values(lineItemsMap);
 
-        return {
+        const result = {
             ok: true,
             order: {
                 id: node.id,
@@ -436,6 +461,10 @@ async function findOrderByTrackingNumber(trackingNumber) {
                 packages: packages // Return all packages so user can see full order context if needed
             }
         };
+
+        // Cache result (5 mins)
+        cache.set(cacheKey, result, 300);
+        return result;
 
     } catch (error) {
         console.error("Shopify GraphQL Error:", error.response?.data || error.message);

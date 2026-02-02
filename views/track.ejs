@@ -500,7 +500,7 @@
                     <div style="display: flex; align-items: center;">
                        <span style="color: #637381; font-size: 13px; margin-right: 8px;">Translate:</span>
                        <select class="lang-select" onchange="translateTracking(this, '<%= pkg.tracking_number %>', <%= index %>)" style="border: 1px solid #dfe3e8; border-radius: 4px; padding: 4px 8px; color: #008060; font-weight: 500; cursor: pointer; outline: none; background: #fff; font-size: 13px;">
-                          <option value="">Original (<%= pkg.original_language || 'Detected' %>)</option>
+                          <option value="original">Original (<%= pkg.original_language || 'Detected' %>)</option>
                           <option value="zh-CN">中文简体</option>
                           <option value="nl">Nederlands</option>
                           <option value="en">English</option>
@@ -530,6 +530,16 @@
                           <option value="hu">Magyar</option>
                           <option value="ro">Română</option>
                        </select>
+                       <script>
+                         (function() {
+                           // Auto-select the language based on server response
+                           const currentLang = "<%= locals.currentLang || 'en' %>"; 
+                           const selects = document.querySelectorAll('.lang-select');
+                           if (selects && selects[<%= index %>]) {
+                               selects[<%= index %>].value = currentLang;
+                           }
+                         })();
+                       </script>
                     </div>
                   </div>
 
@@ -727,10 +737,10 @@
     // --- Translation Logic ---
     async function translateTracking(selectEl, trackingNumber, pkgIndex) {
         const langCode = selectEl.value;
-        if (!langCode) {
-            window.location.reload();
-            return;
-        }
+        // if (!langCode) {
+        //     window.location.reload();
+        //     return;
+        // }
 
         const timelineEl = document.getElementById('timeline-' + pkgIndex);
         if (!timelineEl) return;

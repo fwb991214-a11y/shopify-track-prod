@@ -1,11 +1,44 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Trust Proxy (Essential for Rate Limiting behind Nginx/Shopify)
+app.set('trust proxy', 1);
+
+// --- Security Headers (Helmet) ---
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "cdn.shopify.com"],
+      scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers (onclick, onchange)
+      styleSrc: ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "cdn.shopify.com", "*.myshopify.com"],
+      fontSrc: ["'self'", "fonts.gstatic.com"],
+      connectSrc: ["'self'", "translate.googleapis.com", "*.myshopify.com"],
+      frameAncestors: ["'self'", "https://*.myshopify.com", "https://admin.shopify.com"] // Allow embedding in Shopify
+    }
+  },
+  crossOriginEmbedderPolicy: false // Disable if causing issues with cross-origin resources
+}));
+
+// --- Rate Limiting ---
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+// Apply global limiter to all requests
+app.use(globalLimiter);
 
 // 调试中间件：打印所有请求详情
 app.use((req, res, next) => {
@@ -105,11 +138,15 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
 
         viewData.order = orderResult.order;
         
+        // Determine target language (default to English if not specified, allow 'original' to skip translation)
+        const requestedLang = req.query.lang; 
+        const targetLang = requestedLang === 'original' ? null : (requestedLang || 'en');
+
         // Fetch tracking for all packages in parallel
         // Note: viewData.order.packages already has basic info, we need to enrich it with 17TRACK data
         const enrichedPackages = await Promise.all(viewData.order.packages.map(async (pkg) => {
             if (pkg.tracking_number && pkg.tracking_number !== 'Processing') {
-                const trackInfo = await getTrackingInfo(pkg.tracking_number);
+                const trackInfo = await getTrackingInfo(pkg.tracking_number, targetLang);
                 if (trackInfo.ok) {
                     return {
                         ...pkg,
@@ -124,6 +161,7 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
         }));
 
         viewData.packages = enrichedPackages;
+        viewData.currentLang = requestedLang || 'en'; // Pass to view for dropdown state
 
     } else {
         // --- Tracking Number Mode ---
@@ -140,8 +178,12 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
         // 2. Found Order! Set it to viewData
         viewData.order = orderResult.order;
         
+        // Determine target language
+        const requestedLang = req.query.lang; 
+        const targetLang = requestedLang === 'original' ? null : (requestedLang || 'en');
+
         // 3. Get Logistics Info from 17Track
-        const trackInfo = await getTrackingInfo(tracking);
+        const trackInfo = await getTrackingInfo(tracking, targetLang);
         
         // 4. Construct Package Data
         // If 17Track fails or returns nothing, we still show the order info but with empty events
@@ -168,6 +210,7 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
             events: pkgEvents,
             original_language: pkgOriginalLang
         }];
+        viewData.currentLang = requestedLang || 'en'; // Pass to view
     }
 
     // Check if we have any data to show
@@ -201,7 +244,8 @@ app.post(["/proxy/track/translate", "/proxy/translate-track", "/proxy/translate"
     // 2. Get Translated Info
     // Note: 17Track language codes: English=1033, Simple Chinese=2052, etc.
     // We expect frontend to send the correct code (string or int).
-    const trackInfo = await getTrackingInfo(tracking, lang);
+    const targetLang = lang === 'original' ? null : lang;
+    const trackInfo = await getTrackingInfo(tracking, targetLang);
     
     res.json(trackInfo);
   } catch (error) {

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { translate } = require('google-translate-api-x');
+const cache = require('../utils/cache');
 
 const TRACK17_KEY = process.env.TRACK17_KEY;
 const API_BASE_URL = "https://api.17track.net/track/v2.4";
@@ -178,6 +179,15 @@ async function getTrackingInfo(tracking, lang = null) {
     };
   }
 
+  // --- Cache Check ---
+  const cacheKey = `track_${tracking}_${lang || 'default'}`;
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) {
+      console.log(`[Cache] Hit for tracking: ${tracking} (${lang || 'default'})`);
+      return cachedData;
+  }
+  // -------------------
+
   if (!TRACK17_KEY || TRACK17_KEY === "YOUR_17TRACK_KEY_HERE") {
     console.warn("⚠️ TRACK17_KEY not set. Returning error.");
     return { ok: false, error: "Tracking service not configured" };
@@ -224,7 +234,7 @@ async function getTrackingInfo(tracking, lang = null) {
         
         // If still no data after polling, return the "Registered" state
         if (!trackData) {
-             return {
+             const result = {
               ok: true,
               tracking,
               status: "Registered",
@@ -236,6 +246,9 @@ async function getTrackingInfo(tracking, lang = null) {
                 }
               ]
             };
+            // Cache "Registered" state for 5 minutes only, as it might update soon
+            cache.set(cacheKey, result, 300);
+            return result;
         }
 
       } else {
@@ -292,7 +305,7 @@ async function getTrackingInfo(tracking, lang = null) {
           events = await translateEvents(events, targetLang);
       }
 
-      return {
+      const result = {
         ok: true,
         tracking,
         status: status,
@@ -300,6 +313,10 @@ async function getTrackingInfo(tracking, lang = null) {
         events: events,
         original_language: originalLang
       };
+
+      // Cache successful result (default TTL)
+      cache.set(cacheKey, result);
+      return result;
     }
 
     return { ok: false };
