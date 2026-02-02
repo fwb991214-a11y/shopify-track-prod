@@ -150,6 +150,10 @@ function detectLanguage(events) {
     if (/[а-яА-Я]/.test(text)) return 'Russian';
     if (/[\uac00-\ud7af]/.test(text)) return 'Korean';
     if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return 'Japanese';
+    if (/[\u0900-\u097F]/.test(text)) return 'Hindi';
+    if (/[\u0590-\u05FF]/.test(text)) return 'Hebrew';
+    if (/[\u0E00-\u0E7F]/.test(text)) return 'Thai';
+    if (/[\u0600-\u06FF]/.test(text)) return 'Arabic';
   }
   
   return 'English';

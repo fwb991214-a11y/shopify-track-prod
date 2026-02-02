@@ -115,7 +115,8 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
                         ...pkg,
                         status: trackInfo.status,
                         carrier: trackInfo.carrier,
-                        events: trackInfo.events || []
+                        events: trackInfo.events || [],
+                        original_language: trackInfo.original_language
                     };
                 }
             }
