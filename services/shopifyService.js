@@ -99,14 +99,28 @@ async function processOrderData(order, shopDomain, token) {
             
             // Map product images back to line items
             products.forEach(prod => {
-                if (prod.image && prod.image.src) {
-                    // Update all line items with this product_id
-                    Object.values(lineItemsMap).forEach(li => {
-                        if (li.product_id === prod.id) {
+                // Find matching line items
+                Object.values(lineItemsMap).forEach(li => {
+                    // Use String comparison to be safe (API sometimes returns numbers, sometimes strings)
+                    if (String(li.product_id) === String(prod.id)) {
+                        
+                        // 1. Try to find Variant Image first
+                        let variantImage = null;
+                        if (li.variant_id && prod.images && prod.images.length > 0) {
+                             const vImg = prod.images.find(img => img.variant_ids && img.variant_ids.includes(li.variant_id));
+                             if (vImg) {
+                                 variantImage = vImg.src;
+                             }
+                        }
+
+                        // 2. Fallback to Main Product Image
+                        if (variantImage) {
+                            li.image = variantImage;
+                        } else if (prod.image && prod.image.src) {
                             li.image = prod.image.src;
                         }
-                    });
-                }
+                    }
+                });
             });
             
         } catch (error) {

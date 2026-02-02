@@ -180,13 +180,6 @@ async function getTrackingInfo(tracking, lang = null) {
   }
 
   try {
-    // If language is specified, try to update it first
-    if (lang) {
-        await changeTrackingInfo(tracking, lang);
-        // Add a small delay to ensure update propagates
-        await delay(500); 
-    }
-
     // 1. First attempt to get tracking info
     let data = await fetchFrom17Track(tracking);
     let trackData = null;
