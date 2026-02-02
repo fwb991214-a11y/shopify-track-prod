@@ -185,7 +185,7 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
 });
 
 // New route for translating tracking info - Updated to be under /proxy/track/translate to match App Proxy path
-app.post(["/proxy/track/translate", "/proxy/translate-track"], express.json(), async (req, res) => {
+app.post(["/proxy/track/translate", "/proxy/translate-track", "/proxy/translate"], express.json(), async (req, res) => {
   const { tracking, lang } = req.body;
   if (!tracking || !lang) {
     return res.json({ ok: false, error: "Missing tracking number or language code" });
