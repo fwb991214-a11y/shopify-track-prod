@@ -735,8 +735,14 @@
         const originalContent = timelineEl.innerHTML;
         timelineEl.innerHTML = '<div style="text-align:center; padding: 30px; color: #637381;">Translating... <div class="spinner" style="width:20px; height:20px; border-width:2px; display:inline-block; vertical-align:middle; margin-left:10px;"></div></div>';
 
+        // Use a relative path logic to ensure it works on Shopify App Proxy
+        // If current URL is .../apps/track, we want to hit .../apps/track/translate
+        // This maps to backend /proxy/track/translate
+        const currentPath = window.location.pathname.replace(/\/$/, ''); // Remove trailing slash if any
+        const translateUrl = currentPath + '/translate';
+
         try {
-            const response = await fetch('/proxy/translate-track', {
+            const response = await fetch(translateUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
