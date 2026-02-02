@@ -135,6 +135,7 @@ async function processOrderData(order, shopDomain, token) {
     }
     
     // 3. Process Fulfillments (Packages)
+    // First, map existing fulfillments to packages
     const packages = order.fulfillments.map((f, index) => {
         // Find which items are in this fulfillment
         const packageItems = f.line_items.map(li => {
@@ -156,8 +157,43 @@ async function processOrderData(order, shopDomain, token) {
         };
     }).filter(p => p.tracking_number);
 
-    // 4. Identify Unfulfilled or Non-tracked items (Optional)
-    // For this specific request, we just want to show items per package.
+    // 4. Handle Unfulfilled / Partial Items
+    // Calculate what has been fulfilled so far
+    const fulfilledCounts = {};
+    packages.forEach(pkg => {
+        pkg.items.forEach(item => {
+            fulfilledCounts[item.id] = (fulfilledCounts[item.id] || 0) + item.quantity;
+        });
+    });
+
+    // Determine remaining unfulfilled items
+    const unfulfilledItems = [];
+    Object.values(lineItemsMap).forEach(item => {
+        const fulfilledQty = fulfilledCounts[item.id] || 0;
+        const remainingQty = item.quantity - fulfilledQty;
+        
+        if (remainingQty > 0) {
+            unfulfilledItems.push({
+                ...item,
+                quantity: remainingQty
+            });
+        }
+    });
+
+    // If we have unfulfilled items, create a "Processing" package
+    if (unfulfilledItems.length > 0) {
+        packages.push({
+            id: 'unfulfilled-group',
+            name: `Package #${packages.length + 1} (Processing)`,
+            tracking_number: 'Processing',
+            tracking_company: 'N/A',
+            tracking_url: null,
+            status: 'ordered', // This maps to "We have received your order..." in frontend
+            items: unfulfilledItems
+        });
+    }
+
+    // Return all items for the "Order Info" summary if needed, or just let the frontend handle it.
     
     // Return all items for the "Order Info" summary if needed, or just let the frontend handle it.
     const allItems = Object.values(lineItemsMap);

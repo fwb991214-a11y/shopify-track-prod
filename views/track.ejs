@@ -479,7 +479,11 @@
                 </div>
                 <div class="status-desc">
                   <% if (!pkg.events || pkg.events.length === 0) { %>
-                    Your shipment is on the way. Please wait for the carrier to update an event.
+                    <% if (pkg.status === 'ordered' || pkg.status === 'Processing') { %>
+                        We have received your order and are preparing it for shipment.
+                    <% } else { %>
+                        Your shipment is on the way. Please wait for the carrier to update an event.
+                    <% } %>
                   <% } else { %>
                     Carrier: <%= pkg.carrier || pkg.tracking_company || 'Unknown' %> | Tracking: <%= pkg.tracking_number %>
                   <% } %>

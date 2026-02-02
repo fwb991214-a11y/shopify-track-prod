@@ -108,7 +108,7 @@ app.get(["/proxy/track", "/proxy"], async (req, res) => {
         // Fetch tracking for all packages in parallel
         // Note: viewData.order.packages already has basic info, we need to enrich it with 17TRACK data
         const enrichedPackages = await Promise.all(viewData.order.packages.map(async (pkg) => {
-            if (pkg.tracking_number) {
+            if (pkg.tracking_number && pkg.tracking_number !== 'Processing') {
                 const trackInfo = await getTrackingInfo(pkg.tracking_number);
                 if (trackInfo.ok) {
                     return {
